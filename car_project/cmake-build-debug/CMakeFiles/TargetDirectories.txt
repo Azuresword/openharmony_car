@@ -1,0 +1,3 @@
+/home/oh/car_project/cmake-build-debug/CMakeFiles/car_project.dir
+/home/oh/car_project/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/oh/car_project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
