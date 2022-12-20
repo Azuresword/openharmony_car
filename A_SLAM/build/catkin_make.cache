@@ -1,0 +1,2 @@
+a-loam-devel:nav:pointcloud_to_laserscan-indigo-devel
+-DCATKIN_DEVEL_PREFIX=/home/oh/桌面/A_SLAM/devel -DCMAKE_INSTALL_PREFIX=/home/oh/桌面/A_SLAM/install -G Unix Makefiles

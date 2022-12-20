@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+ 
+<launch>
+    <node name="map2basefootprint" pkg="tf2_ros" type="static_transform_publisher" args="-0.08 0 0 0 0 0 aft_mapped /base_footprint" />
+    <node name="re" pkg="tf2_ros" type="static_transform_publisher" args=" 0 0 0 0 0 0 aft_mapped rslidar" />
+    <!-- run pointcloud_to_laserscan node -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+ 
+        <remap from="cloud_in" to="/rslidar_points"/>
+        
+        <rosparam>
+            # target_frame: rslidar # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.0
+            min_height: -0.4
+            max_height: 1.0
+ 
+            angle_min: -3.1415926 # -M_PI
+            angle_max: 3.1415926 # M_PI
+            angle_increment: 0.003 # 0.17degree
+            scan_time: 0.1
+            range_min: 0.2
+            range_max: 100
+            use_inf: true
+            inf_epsilon: 1.0
+ 
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 1
+        </rosparam>
+ 
+    </node>
+ 
+    <!-- start hector_mapping node -->
+    <node pkg = "hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+        <!-- Frame names -->
+        <param name="pub_map_odom_transform" value="true"/>
+        <param name="map_frame" value="map" />
+        <param name="base_frame" value="base_footprint" />
+        <param name="odom_frame" value="camera_init" />
+ 
+        <!-- Tf use -->
+        <param name="use_tf_scan_transformation" value="true"/>
+        <param name="use_tf_pose_start_estimate" value="false"/>
+ 
+        <!-- Map size / start point -->
+        <param name="map_resolution" value="0.05"/>
+        <param name="map_size" value="8192"/>
+        <param name="map_start_x" value="0.5"/>
+        <param name="map_start_y" value="0.5" />
+        <param name="laser_z_min_value" value = "-1.0" />
+        <param name="laser_z_max_value" value = "1.0" />
+        <param name="map_multi_res_levels" value="2" />
+        <param name="/use_sim_time" value="false" />
+        <param name="map_pub_period" value="2" />
+        <param name="laser_min_dist" value="0.4" />
+        <param name="laser_max_dist" value="30.0" />
+        <param name="output_timing" value="false" />
+        <param name="pub_map_scanmatch_transform" value="true" />
+ 
+        <!-- Map update parameters -->
+        <param name="update_factor_free" value="0.4"/>
+        <param name="update_factor_occupied" value="0.7" />    
+        <param name="map_update_distance_thresh" value="0.2"/>
+        <param name="map_update_angle_thresh" value="0.06" />
+ 
+        <!-- Advertising config --> 
+        <param name="advertise_map_service" value="true"/>
+        <param name="scan_subscriber_queue_size" value="5"/>
+        <param name="scan_topic" value="scan"/>
+    </node>
+
+</launch>

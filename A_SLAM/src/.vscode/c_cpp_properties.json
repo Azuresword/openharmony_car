@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/oh/robosense_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/oh/桌面/A_SLAM/src/a-loam-devel/include/**",
+        "/home/oh/robosense_ws/src/base_control/include/**",
+        "/home/oh/load_velodyne/src/loam_velodyne-master/include/**",
+        "/home/oh/robosense_ws/src/nav/include/**",
+        "/home/oh/robosense_ws/src/odem_to_base/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

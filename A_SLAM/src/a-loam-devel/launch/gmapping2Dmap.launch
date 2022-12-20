@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+ 
+<launch>
+
+    <!-- run pointcloud_to_laserscan node -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+ 
+        <remap from="cloud_in" to="/rslidar_points"/>
+        
+        <rosparam>
+            # target_frame: rslidar # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.01
+            min_height: 0.4
+            max_height: 1.0
+ 
+            angle_min: -3.1415926 # -M_PI
+            angle_max: 3.1415926 # M_PI
+            angle_increment: 0.005 # 0.17degree
+            scan_time: 0.1
+            range_min: 0.2
+            range_max: 100
+            use_inf: true
+            inf_epsilon: 1.0
+ 
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 1
+        </rosparam>
+    </node>
+    <node name="map2basefootprint" pkg="tf2_ros" type="static_transform_publisher" args="-0.08 0 0 0 0 0 aft_mapped /base_footprint" />
+    <node name="re" pkg="tf2_ros" type="static_transform_publisher" args=" 0 0 0 0 0 0 aft_mapped rslidar" />
+    <!-- <node name="re_1" pkg="tf2_ros" type="static_transform_publisher" args=" 0 0 0 0 0 0 /base_footprint base_link" /> -->
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+      <remap from="/scan" to="scan"/>
+        <param name="base_frame" value="base_footprint"/><!--底盘坐标系-->
+        <param name="odom_frame" value="camera_init"/> <!--里程计坐标系-->
+        <param name="map_update_interval" value="5.0"/>
+        <param name="maxUrange" value="16.0"/>
+        <param name="sigma" value="0.05"/>
+        <param name="lskip" value="0"/>
+        <param name="kernelSize" value="1"/>
+        <param name="lstep" value="0.05"/>
+        <param name="astep" value="0.05"/>
+        <param name="iterations" value="5"/>
+        <param name="lsigma" value="0.075"/>
+        <param name="ogain" value="3.0"/>
+        <param name="srr" value="0.1"/>
+        <param name="srt" value="0.2"/>
+        <param name="str" value="0.1"/>
+        <param name="stt" value="0.2"/>
+        <param name="linearUpdate" value="1.0"/>
+        <param name="angularUpdate" value="0.5"/>
+        <param name="temporalUpdate" value="3.0"/>
+        <param name="resampleThreshold" value="0.5"/>
+        <param name="particles" value="30"/>
+        <param name="xmin" value="-50.0"/>
+        <param name="ymin" value="-50.0"/>
+        <param name="xmax" value="50.0"/>
+        <param name="ymax" value="50.0"/>
+        <param name="delta" value="0.05"/>
+        <param name="llsamplerange" value="0.01"/>
+        <param name="llsamplestep" value="0.01"/>
+        <param name="lasamplerange" value="0.005"/>
+        <param name="lasamplestep" value="0.005"/>
+    </node>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+        <rosparam file="$(find aloam_velodyne)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find aloam_velodyne)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find aloam_velodyne)/param/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find aloam_velodyne)/param/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find aloam_velodyne)/param/base_local_planner_params.yaml" command="load" />
+        <!-- <rosparam file="$(find aloam_velodyne)/param/move_base_params.yaml" command="load" /> -->
+    </node>
+</launch>
